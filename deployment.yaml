@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-spring-boot-app
+spec:
+  replicas: 3  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: your-spring-boot-app
+  template:
+    metadata:
+      labels:
+        app: your-spring-boot-app
+    spec:
+      containers:
+        - name: java-demo
+          image: merazza/java:demo-0.0.1  # Replace with your ECR repository URL and image name
+          ports:
+            - containerPort: 8080
