@@ -8,9 +8,9 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: ' main', credentialsId: 'jenkins_git', url: 'https://github.com/ZatinMe/java-demo'
+        stage('Git checkout'){
+            steps{
+                git branch: 'main', credentialsId: 'jenkins_git', url: 'https://github.com/ZatinMe/java-demo.git'
             }
         }
         stage('Read Version') {
