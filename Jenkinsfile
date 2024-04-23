@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker_creds')
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
-        VERSION_FILE = 'version'
+        VERSION_FILE = 'version.txt'
     }
 
     stages {
