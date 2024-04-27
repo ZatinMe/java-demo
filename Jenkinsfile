@@ -44,7 +44,7 @@ pipeline {
                     if (files) {
                         def jarFile = files[0]
                         def dockerImageTag = "${DOCKER_IMAGE_NAME}:v${env.BUILD_VERSION}"
-                        docker.build(dockerImageTag, "-f Dockerfile . --build-arg JAR_FILE=${jarFile}")
+                        docker.build(dockerImageTag, '.')
                     } else {
                         return
                     }
