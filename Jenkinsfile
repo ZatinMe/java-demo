@@ -32,6 +32,7 @@ pipeline {
             steps {
                 sh 'export MAVEN_HOME=/opt/maven'
                 sh 'export PATH=$PATH:$MAVEN_HOME/bin'
+                sh 'echo path is : $PATH'
                 sh 'mvn --version'
                 sh 'mvn clean install'
             }
