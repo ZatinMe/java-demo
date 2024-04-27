@@ -5,6 +5,8 @@ pipeline {
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker_creds')
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
         VERSION_FILE = 'version.txt'
+        MAVEN_HOME = '/opt/maven'
+        PATH = "$MAVEN_HOME/bin:$PATH"
     }
 
     stages {
@@ -30,7 +32,6 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'export PATH=$PATH:/opt/maven/bin'
                 sh 'echo path is : $PATH'
                 sh 'mvn --version'
                 sh 'mvn clean install'
