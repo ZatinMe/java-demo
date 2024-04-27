@@ -42,9 +42,7 @@ pipeline {
                 script {
                     def jarFile = findFiles(glob: 'target/*.jar').files[0]
                     def dockerImageTag = "${DOCKER_IMAGE_NAME}:v${env.BUILD_VERSION}"
-                    sh 'mv jarFIle /tmp'
-                    sh 'echo ${dockerImageTag}'
-                    // docker.build(dockerImageTag, "-f Dockerfile . --build-arg JAR_FILE=${jarFile}")
+                    docker.build(dockerImageTag, "-f Dockerfile . --build-arg JAR_FILE=${jarFile}")
                 }
             }
         }
