@@ -40,7 +40,11 @@ pipeline {
         stage('Dockerize') {
             steps {
                 script {
-                    def jarFile = findFiles(glob: 'target/*.jar').files[0]
+                    def files = findFiles(glob: 'target/*.jar')
+                    if (files) {
+                        def jarFile = files[0]
+                    else 
+                        return
                     def dockerImageTag = "${DOCKER_IMAGE_NAME}:v${env.BUILD_VERSION}"
                     docker.build(dockerImageTag, "-f Dockerfile . --build-arg JAR_FILE=${jarFile}")
                 }
