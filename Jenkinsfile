@@ -43,7 +43,7 @@ pipeline {
                     def files = findFiles(glob: 'target/*.jar')
                     if (files) {
                         def jarFile = files[0]
-                        def dockerImageTag = "${DOCKER_IMAGE_NAME}:v${env.BUILD_VERSION}"
+                        def dockerImageTag = "${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
                         docker.build(dockerImageTag, '.')
                     } else {
                         return
@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
-                        docker.image("${DOCKER_IMAGE_NAME}:v${env.BUILD_VERSION}").push()
+                        docker.image("${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}").push()
                     }
                 }
             }
