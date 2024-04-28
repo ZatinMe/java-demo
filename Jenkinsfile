@@ -1,6 +1,5 @@
 pipeline {
     agent any
-    def app
 
     environment {
         DOCKER_CREDS = 'docker_creds'
@@ -40,13 +39,20 @@ pipeline {
                 script {
                     def jarFile = findFiles(glob: 'target/*.jar').files[0]
                     def dockerImageTag = "${DOCKER_IMAGE_NAME}:v${env.BUILD_VERSION}"
-                    app = docker.build(dockerImageTag, "-f Dockerfile . --build-arg JAR_FILE=${jarFile}")
+                    docker.build(dockerImageTag, "-f Dockerfile . --build-arg JAR_FILE=${jarFile}")
                 }
             }
         }
-        stage('Push to Docker Registry') {
-            docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
-                app.push("${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}")
+        stage('Deploy Image') {
+            steps {
+                script {
+                    // Use Jenkins credentials for Docker Hub login
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                        // Push the image
+                        sh "docker push ${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
+                    }
+                }
             }
         }
     }
