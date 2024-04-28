@@ -1,12 +1,12 @@
 pipeline {
     agent any
+    def app
 
     environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('docker_creds')
+        DOCKER_CREDS = 'docker_creds'
+        DOCKER_REGISTRY_CREDENTIALS = credentials(DOCKER_CREDS)
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
         VERSION_FILE = 'version.txt'
-        MAVEN_HOME = '/opt/maven'
-        PATH = "$MAVEN_HOME/bin:$PATH"
     }
 
     stages {
@@ -32,34 +32,21 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'echo path is : $PATH'
-                sh 'mvn --version'
                 sh 'mvn clean install'
             }
         }
         stage('Dockerize') {
             steps {
                 script {
-                    def files = findFiles(glob: 'target/*.jar')
-                    if (files) {
-                        def jarFile = files[0]
-                        def dockerImageTag = "${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
-                        docker.build(dockerImageTag, '.')
-                    } else {
-                        return
-                    }
+                    def jarFile = findFiles(glob: 'target/*.jar').files[0]
+                    def dockerImageTag = "${DOCKER_IMAGE_NAME}:v${env.BUILD_VERSION}"
+                    app = docker.build(dockerImageTag, "-f Dockerfile . --build-arg JAR_FILE=${jarFile}")
                 }
             }
         }
         stage('Push to Docker Registry') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        docker.withRegistry('https://hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
-                            docker.image("${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}").push()
-                        }
-                    }
-                }
+            docker.withRegistry('https://registry.hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
+                app.push("${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}")
             }
         }
     }
