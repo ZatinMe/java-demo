@@ -36,6 +36,8 @@ Now install Docker ( https://docs.docker.com/engine/install/ubuntu/ )
     sudo apt-get install docker-ce
     sudo docker run hello-world
 
+    sudo systemctl restart docker
+
 Now installation are Done.... Make a jenkins job and try
     
    
