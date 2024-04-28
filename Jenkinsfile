@@ -5,6 +5,8 @@ pipeline {
         DOCKER_CREDS = 'docker_creds'
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
         VERSION_FILE = 'version.txt'
+        MAVEN_HOME = '/opt/maven'
+        PATH = "$MAVEN_HOME/bin:$PATH"
     }
 
     stages {
