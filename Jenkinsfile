@@ -31,42 +31,45 @@ pipeline {
                 }
             }
         }
-        stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-        stage('Dockerize') {
-            steps {
-                script {
-                    def files = findFiles(glob: 'target/*.jar')
-                    if (files) {
-                        def jarFile = files[0]
-                        def dockerImageTag = "${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
-                        dockerImage = docker.build(dockerImageTag, '.')
-                    } else {
-                        return
-                    }
-                }
-            }
-        }
-
-        stage('push Image') {
-            steps {
-                script {
-                    docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
+//         stage('Build') {
+//             steps {
+//                 sh 'mvn clean install'
+//             }
+//         }
+//         stage('Dockerize') {
+//             steps {
+//                 script {
+//                     def files = findFiles(glob: 'target/*.jar')
+//                     if (files) {
+//                         def jarFile = files[0]
+//                         def dockerImageTag = "${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
+//                         dockerImage = docker.build(dockerImageTag, '.')
+//                     } else {
+//                         return
+//                     }
+//                 }
+//             }
+//         }
+//
+//         stage('push Image') {
+//             steps {
+//                 script {
+//                     docker.withRegistry( '', registryCredential ) {
+//                         dockerImage.push()
+//                     }
+//                 }
+//             }
+//         }
         stage('Git Update') {
             steps {
                 script {
-                    // Git commands to add, commit, and push the updated file
-                    sh "git add ${VERSION_FILE}"
-                    sh "git commit -m 'Automated via jenkins: Update version file'"
-                    sh "git push origin main"
+                     withCredentials([usernamePassword(credentialsId: 'jenkins_git', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        sh "git config --global credential.helper 'store --file ~/.git-credentials'"
+                        sh "echo -e 'https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com' >> ~/.git-credentials"
+                        sh "git add ${VERSION_FILE}"
+                        sh "git commit -m 'Update version file'"
+                        sh "git push origin master"  // Assuming you're pushing to the master branch
+                    }
                 }
             }
         }
