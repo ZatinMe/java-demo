@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('docker_creds')
+//         DOCKER_REGISTRY_CREDENTIALS = credentials('docker_creds')
+        DOCKER_CREDENTIALS = credentials('docker_creds')
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
         VERSION_FILE = 'version.txt'
         MAVEN_HOME = '/opt/maven'
@@ -52,11 +53,9 @@ pipeline {
         stage('Deploy Image') {
             steps {
                 script {
-                    // Use Jenkins credentials for Docker Hub login
-                    withCredentials([usernamePassword(credentialsId: DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                    docker.withRegistry('https://registry-1.docker.io/v2/', DOCKER_CREDENTIALS){
                         // Push the image
-                        sh "docker push ${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
+                        docker.image(${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}).push()
                     }
                 }
             }
