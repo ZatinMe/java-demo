@@ -60,5 +60,15 @@ pipeline {
                 }
             }
         }
+        stage('Git Update') {
+            steps {
+                script {
+                    // Git commands to add, commit, and push the updated file
+                    sh "git add ${VERSION_FILE}"
+                    sh "git commit -m 'Automated via jenkins: Update version file'"
+                    sh "git push origin main"
+                }
+            }
+        }
     }
 }
