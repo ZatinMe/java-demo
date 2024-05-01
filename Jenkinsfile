@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDS = 'docker_creds'
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker_creds')
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
         VERSION_FILE = 'version.txt'
         MAVEN_HOME = '/opt/maven'
@@ -53,7 +54,7 @@ pipeline {
             steps {
                 script {
                     // Use Jenkins credentials for Docker Hub login
-                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
                         // Push the image
                         sh "docker push ${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
