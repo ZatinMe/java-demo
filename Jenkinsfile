@@ -65,7 +65,7 @@ pipeline {
                 script {
                      withCredentials([usernamePassword(credentialsId: 'jenkins_git', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh "git config --global credential.helper 'store --file ~/.git-credentials'"
-                        sh "echo -e 'https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com' >> ~/.git-credentials"
+                        sh "echo -e 'https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com' > ~/.git-credentials"
                         sh "git add ${VERSION_FILE}"
                         sh "git commit -m 'Update version file'"
                         sh "git push origin main"  // Assuming you're pushing to the master branch
