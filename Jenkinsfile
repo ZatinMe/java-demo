@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDS = 'docker_creds'
         DOCKER_REGISTRY_CREDENTIALS = credentials('docker_creds')
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
         VERSION_FILE = 'version.txt'
