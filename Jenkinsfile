@@ -6,8 +6,8 @@ pipeline {
         VERSION_FILE = 'version.txt'
         MAVEN_HOME = '/opt/maven'
         PATH = "$MAVEN_HOME/bin:$PATH"h
-        DOCKER_HUB_USERNAME = credentials('docker_username')
-        DOCKER_HUB_PASSWORD = credentials('docker_pass')
+        DOCKER_HUB_USERNAME = credentials('merazza')
+        DOCKER_HUB_PASSWORD = credentials('qweasd123')
     }
 
     stages {
