@@ -55,7 +55,7 @@ pipeline {
                 script {
                     docker.withRegistry('https://registry-1.docker.io/v2/', DOCKER_CREDENTIALS){
                         // Push the image
-                        docker.image(${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}).push()
+                        docker.image("${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}").push()
                     }
                 }
             }
