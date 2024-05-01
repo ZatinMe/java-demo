@@ -2,11 +2,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = credentials('docker_creds')
         DOCKER_IMAGE_NAME = 'merazza/java:amd-'
         VERSION_FILE = 'version.txt'
         MAVEN_HOME = '/opt/maven'
         PATH = "$MAVEN_HOME/bin:$PATH"h
+        DOCKER_HUB_USERNAME = credentials('docker_username')
+        DOCKER_HUB_PASSWORD = credentials('docker_pass')
     }
 
     stages {
@@ -52,9 +53,8 @@ pipeline {
         stage('Deploy Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry-1.docker.io/v2/', DOCKER_CREDENTIALS){
-                        docker.image("${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}").push()
-                    }
+                        sh "docker login -u '${DOCKER_HUB_USERNAME}' -p '${DOCKER_HUB_PASSWORD}'"
+                        sh "docker push '${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}'"
                 }
             }
         }
