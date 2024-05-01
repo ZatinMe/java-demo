@@ -53,7 +53,7 @@ pipeline {
         stage('Deploy Image') {
             steps {
                 script {
-                        sh "docker login -u '${DOCKER_HUB_USERNAME}' -p '${DOCKER_HUB_PASSWORD}'"
+                        sh "docker login -u merazza -p qweasd123"
                         sh "docker push '${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}'"
                 }
             }
