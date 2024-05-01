@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: DOCKER_REGISTRY_CREDENTIALS, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        docker.withRegistry('https://registry-1.docker.io/v2/', DOCKER_REGISTRY_CREDENTIALS) {
+                        docker.withRegistry('https://hub.docker.com', DOCKER_REGISTRY_CREDENTIALS) {
                             docker.image("${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}").push()
                         }
                     }
