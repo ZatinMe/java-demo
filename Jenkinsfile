@@ -64,6 +64,8 @@ pipeline {
             steps {
                 script {
                      withCredentials([usernamePassword(credentialsId: 'jenkins_git', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        sh "git config --global user.name '${GIT_USERNAME}'"
+                        sh "git config --global user.email meraz.zatin@gmail.com"
                         sh "git config --global credential.helper 'store --file ~/.git-credentials'"
                         sh "echo -e 'https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com' > ~/.git-credentials"
                         sh "git add ${VERSION_FILE}"
