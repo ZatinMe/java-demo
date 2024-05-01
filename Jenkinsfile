@@ -6,6 +6,8 @@ pipeline {
         VERSION_FILE = 'version.txt'
         MAVEN_HOME = '/opt/maven'
         PATH = "$MAVEN_HOME/bin:$PATH"
+        dockerImage = ''
+        registryCredential = 'docker_creds'
     }
 
     stages {
@@ -41,18 +43,20 @@ pipeline {
                     if (files) {
                         def jarFile = files[0]
                         def dockerImageTag = "${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}"
-                        docker.build(dockerImageTag, '.')
+                        dockerImage = docker.build(dockerImageTag, '.')
                     } else {
                         return
                     }
                 }
             }
         }
-        stage('Deploy Image') {
+
+        stage('push Image') {
             steps {
                 script {
-                        sh "docker login -u merazza -p qweasd123"
-                        sh "docker push '${DOCKER_IMAGE_NAME}${env.BUILD_VERSION}'"
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
                 }
             }
         }
