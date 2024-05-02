@@ -66,6 +66,7 @@ pipeline {
                      withCredentials([usernamePassword(credentialsId: 'jenkins_git', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh "git config --global user.name '${GIT_USERNAME}'"
                         sh "git config --global user.email meraz.zatin@gmail.com"
+                        sh 'git remote add origin https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/ZatinMe/java-demo.git'
                         sh "git add ${VERSION_FILE}"
                         sh "git commit -m 'Update version file'"
                         sh "git push origin main"  // Assuming you're pushing to the master branch
